@@ -1,8 +1,5 @@
 pull_requests:
   do_not_increment_build_number: true
-branches:
-  only:
-  - master
 skip_commits:
   files:
   - '**/*.md'
