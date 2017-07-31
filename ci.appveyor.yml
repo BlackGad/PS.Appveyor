@@ -20,6 +20,7 @@ assembly_info:
 before_build:
 - cmd: nuget restore
 build:
+  project: *.sln
   verbosity: normal
 artifacts:
 - path: _Artifacts\Release.*\**\*.nupkg
