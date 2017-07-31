@@ -1,0 +1,25 @@
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - ci
+skip_commits:
+  files:
+  - '**/*.md'
+  - '.Assets/**/*.*'
+configuration: Release
+platform: Any CPU
+init:
+- ps: "$token = $env:API_TOKEN\n$masterAccountName = $env:MASTER_ACCOUNT_NAME\n$masterProjectSlug = $env:MASTER_PROJECT_SLUG\n\n$prevVersion = [version]::Parse(\"0.0\")\n$ciApiURL = \"https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG\"\n$ciHistory = Invoke-RestMethod -Uri \"$ciApiURL/history?recordsNumber=2\" -Method Get\nif ($ciHistory.builds.Count -eq 2)\n{\n    $prevVersionMatch = [regex]::match($ciHistory.builds[1].version, \"(\\d+)\\.(\\d+)(-.+)?\")\n    if($prevVersionMatch.Success) \n    {\n        $prevVersion = [version]::Parse($prevVersionMatch.Groups[1].Value + \".\" + $prevVersionMatch.Groups[2].Value);\n    }\n}\n\n$nonceVersion = $prevVersion.ToString(2) + \".\" + $env:APPVEYOR_BUILD_NUMBER + \"-\" + [guid]::NewGuid().ToString(\"N\")\nUpdate-AppveyorBuild -Version \"$nonceVersion\"\n\n$masterVersion = [version]::Parse(\"0.0\")\n$masterApiURL = \"https://ci.appveyor.com/api/projects/$masterAccountName/$masterProjectSlug\"\n$masterHistory = Invoke-RestMethod -Uri \"$masterApiURL/history?recordsNumber=1\" -Method Get\nif ($masterHistory.builds.Count -eq 1)\n{\n    $masterVersionMatch = [regex]::match($masterHistory.builds[0].version, \"(\\d+)\\.(\\d+)(-.+)?\")\n    if($masterVersionMatch.Success) \n    {\n        $masterVersion = [version]::Parse($masterVersionMatch.Groups[1].Value + \".\" + $masterVersionMatch.Groups[2].Value);\n    }\n}\n\nif($masterVersion -gt $prevVersion)\n{\n    Write-Warning \"Master build version was increased. Resetting build number to 1.\"\n        \n    #reset current build number to 1 and next one to 2\n    $env:APPVEYOR_BUILD_NUMBER = \"1\"\n\n    $headers = @{\n      \"Authorization\" = \"Bearer $token\"\n      \"Content-type\" = \"application/json\"\n    }\n\n    $body = @{ nextBuildNumber=\"2\" }\n    $body = $body | ConvertTo-Json\n    Invoke-RestMethod -Uri \"$ciApiURL/settings/build-number\" -Headers $headers -Body $body  -Method Put\n}\n\n$newVersion = $masterVersion.ToString(2) + \".\" + $env:APPVEYOR_BUILD_NUMBER\nif(![string]::IsNullOrEmpty($env:APPVEYOR_PULL_REQUEST_NUMBER))\n{\n    $newVersion = $newVersion + \"-\" + $env:APPVEYOR_PULL_REQUEST_NUMBER\n}\n\nWrite-Host(\"New version is: \" + $newVersion)\n\nUpdate-AppveyorBuild -Version \"$newVersion\""
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: normal
+artifacts:
+- path: _Artifacts\Release.*\**\*.nupkg
