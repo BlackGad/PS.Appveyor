@@ -21,6 +21,6 @@ before_build:
 - cmd: nuget restore
 build:
   verbosity: normal
-  project: solution.sln
+  project: $(Solution)
 artifacts:
 - path: _Artifacts\Release.*\**\*.nupkg
