@@ -22,5 +22,6 @@ before_build:
 build:
   verbosity: normal
   project: $(SOLUTION)
+  publish_nuget: true
 artifacts:
 - path: _Artifacts\Release.*\**\*.nupkg
