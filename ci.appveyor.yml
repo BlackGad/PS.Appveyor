@@ -23,4 +23,3 @@ build:
   verbosity: normal
   project: $(SOLUTION)
   publish_nuget: true
-  publish_nuget_symbols: true
