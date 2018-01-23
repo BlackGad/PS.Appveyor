@@ -22,4 +22,7 @@ before_build:
 build:
   verbosity: normal
   project: $(SOLUTION)
-  publish_nuget: true
+after_build:
+- ps: "$files = get-childitem -recurse -Filter *.ps1\nforeach ($file in $files)\n{\n     nuget pack $file.FullName\n}"
+artifacts:
+- path: _Artifacts\Release.*\**\*.nupkg
