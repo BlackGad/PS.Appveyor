@@ -23,6 +23,6 @@ build:
   verbosity: normal
   project: $(SOLUTION)
 after_build:
-- ps: "$files = get-childitem -recurse -Filter *.ps1\nforeach ($file in $files)\n{\n     nuget pack $file.FullName\n}"
+- ps: "$files = get-childitem -recurse -Filter *.ps1\nforeach ($file in $files)\n{\n     nuget pack $file.FullName -version $env:APPVEYOR_BUILD_VERSION -OutputDirectory \"_Artifacts\"\n}"
 artifacts:
-- path: _Artifacts\Release.*\**\*.nupkg
+- path: _Artifacts\**\*.nupkg
