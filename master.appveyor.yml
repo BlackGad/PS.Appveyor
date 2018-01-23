@@ -20,5 +20,7 @@ before_build:
 build:
   verbosity: normal
   project: $(SOLUTION)
+after_build:
+- ps: "$files = get-childitem -recurse -Filter *.nuspec\nforeach ($file in $files)\n{\n     $nuspec = $file.FullName\n     Write-Host(\"Packing \" + $nuspec + \" package\")\n     nuget pack $nuspec -version $env:APPVEYOR_BUILD_VERSION -OutputDirectory \"_Artifacts\"\n}"
 artifacts:
-- path: _Artifacts\Release.*\**\*.nupkg
+- path: _Artifacts\**\*.nupkg
