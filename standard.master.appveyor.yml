@@ -1,7 +1,5 @@
-version: 1.0.{build}
-branches:
-  only:
-  - $(BRANCH)
+pull_requests:
+  do_not_increment_build_number: true
 image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
