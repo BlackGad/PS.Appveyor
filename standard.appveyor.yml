@@ -21,7 +21,6 @@ before_build:
     dotnet restore
     
     nuget restore
-build:
-  verbosity: minimal
+    
 artifacts:
 - path: '*\bin\*\*.nupkg'
