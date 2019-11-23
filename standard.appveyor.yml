@@ -8,7 +8,7 @@
 -
   branches:
     only:
-      - /ci
+      - ci
       
 build:
   verbosity: minimal
