@@ -1,3 +1,7 @@
+branches:
+  only:
+    - master
+    
 build:
   verbosity: minimal
 
@@ -27,13 +31,3 @@ before_build:
     
 artifacts:
 - path: '*\bin\*\*.nupkg'
-
-for:
--
-  branches:
-    only:
-      - master
--
-  branches:
-    only:
-      - ci
