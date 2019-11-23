@@ -1,7 +1,12 @@
 branches:
   only:
     - master
-    
+
+skip_commits:
+  files:
+  - '**/*.md'
+  - '.Assets/**/*.*'
+  
 build:
   verbosity: minimal
 
