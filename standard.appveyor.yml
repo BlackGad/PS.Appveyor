@@ -28,13 +28,11 @@ before_build:
 artifacts:
 - path: '*\bin\*\*.nupkg'
 
-# override settings for `master` branch
+for:
 -
   branches:
     only:
       - master
-      
-# override settings for `ci` branch
 -
   branches:
     only:
