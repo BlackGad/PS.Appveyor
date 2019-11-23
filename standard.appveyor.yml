@@ -1,6 +1,15 @@
-branches:
-  only:
-  - $(BRANCH)
+# configuration for "master" branch
+-
+  branches:
+    only:
+      - master
+      
+# configuration for all branches starting from "dev-"
+-
+  branches:
+    only:
+      - /ci
+      
 build:
   verbosity: minimal
 
